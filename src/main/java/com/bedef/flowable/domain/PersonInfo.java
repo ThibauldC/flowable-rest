@@ -1,4 +1,4 @@
-package com.bedef.flowable;
+package com.bedef.flowable.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
