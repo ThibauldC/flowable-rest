@@ -37,13 +37,18 @@ public class FlowableController {
     @GetMapping(value= "/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public TaskList getTasks(@RequestParam String assignee){
-        List<String> tasks = taskService.createTaskQuery()
+        List<String> taskIdList = taskService.createTaskQuery()
                 .taskCandidateGroup(assignee)
                 .active()
                 .list()
                 .stream()
                 .map(Task::getId)
-                .collect(Collectors.toList());
+                .toList();
+
+        List<PersonInfo> tasks = taskIdList.stream()
+                .map(id -> taskService.getVariables(id))
+                .map(variables -> mapper.convertValue(variables, PersonInfo.class))
+                .toList();
 
         return new TaskList(tasks);
     }

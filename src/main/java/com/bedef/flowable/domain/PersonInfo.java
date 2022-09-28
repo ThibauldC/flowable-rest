@@ -12,4 +12,5 @@ public class PersonInfo {
     String milCode;
     String unit;
     int age;
+    String action;
 }
