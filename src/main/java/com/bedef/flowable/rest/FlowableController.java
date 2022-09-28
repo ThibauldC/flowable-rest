@@ -13,9 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 public class FlowableController {
@@ -54,19 +54,14 @@ public class FlowableController {
                         .build())
                 .toList();
 
-
         return new TaskList(tasks);
     }
 
     @PostMapping(value= "/task/evaluate", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> evaluateTask(@RequestBody TaskEvaluation eval){
-        if(eval.isApproved()){
-            System.out.printf("Task with id %s has been approved.%n", eval.getId());
-            return ResponseEntity.ok("");
-        }
-        else{
-            System.out.printf("Task with id %s has been rejected.%n", eval.getId());
-            return ResponseEntity.ok("");
-        }
+
+        taskService.complete(eval.getId(), Collections.singletonMap("approved", eval.isApproved()));
+
+        return ResponseEntity.ok("Task successfully evaluated");
     }
 }

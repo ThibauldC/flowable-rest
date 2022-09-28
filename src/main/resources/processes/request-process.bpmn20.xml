@@ -35,11 +35,11 @@
         </sequenceFlow>
 
         <serviceTask id="externalSystemCall" name="Enter approved request into the system"
-                     flowable:class="org.flowable.CallExternalSystemDelegate"/>
+                     flowable:class="com.bedef.flowable.application.MailSender"/>
         <sequenceFlow sourceRef="externalSystemCall" targetRef="approveEnd"/>
 
         <serviceTask id="returnRequest" name="Return request to sender"
-                     flowable:class="org.flowable.RequestReturn"/>
+                     flowable:class="com.bedef.flowable.application.RequestReturn"/>
         <sequenceFlow sourceRef="returnRequest" targetRef="rejectEnd"/>
 
         <endEvent id="approveEnd"/>
