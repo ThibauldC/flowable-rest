@@ -1,6 +1,8 @@
 package com.bedef.flowable.rest;
 
 import com.bedef.flowable.domain.PersonInfo;
+import com.bedef.flowable.domain.TaskEvaluation;
+import com.bedef.flowable.domain.TaskInfo;
 import com.bedef.flowable.domain.TaskList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.flowable.engine.RuntimeService;
@@ -45,11 +47,26 @@ public class FlowableController {
                 .map(Task::getId)
                 .toList();
 
-        List<PersonInfo> tasks = taskIdList.stream()
-                .map(id -> taskService.getVariables(id))
-                .map(variables -> mapper.convertValue(variables, PersonInfo.class))
+        List<TaskInfo> tasks = taskIdList.stream()
+                .map(id -> TaskInfo.builder()
+                        .id(id)
+                        .info(mapper.convertValue(taskService.getVariables(id),PersonInfo.class))
+                        .build())
                 .toList();
 
+
         return new TaskList(tasks);
+    }
+
+    @PostMapping(value= "/task/evaluate", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> evaluateTask(@RequestBody TaskEvaluation eval){
+        if(eval.isApproved()){
+            System.out.printf("Task with id %s has been approved.%n", eval.getId());
+            return ResponseEntity.ok("");
+        }
+        else{
+            System.out.printf("Task with id %s has been rejected.%n", eval.getId());
+            return ResponseEntity.ok("");
+        }
     }
 }
